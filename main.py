@@ -1,23 +1,52 @@
 import smtplib
 import random
 from email.message import EmailMessage
+import json
+import time
 
 
-places = ["Airplane", "Bank", "Beach", "Broadway Theater", "Casino", "Cathedral", "Circus Tent", "Corporate Party", "Navy Army", "Day Spa", "Embassy", "Hospital", "Hotel", "Military Base", "Movie Studio", "Ocean Liner", "Passenger Train", "Pirate Ship", "Polar Station", "Police Station", "Restaurant", "School", "Service Station", "Space Station", "Submarine", "Supermarket", "University", "Amusement Park", "Art Museum", "Candy Factory", "Cemetery", "Coal Mine", "Construction Site", "Game Center", "Gas Station", "Harbor Docks", "Ice Hockey Stadium", "Jail", "Library", "Office", "Race Track", "Retirement Home", "Rock Concert", "Sightseeing Bus", "Subway", "The U.N.", "Vineyard", "Wedding", "Zoo", "Jungle"]
-places_fa = ["هواپیما", "بانک", "ساحل", "تئاتر شهر", "کازینو", "مسجد", "چادر سیرک", "مهمانی شرکت", "ارتش دریایی", "سالن ماساژ", "سفارت", "بیمارستان", "هتل", "پایگاه نظامی", "استودیو فیلمبرداری", "کشتی باربری", "قطار مسافرتی", "کشتی دزدان دریایی", "ایسنگاه قطبی", "ایستگاه پلیس", "رستوران", "مدرسه", "تعمیرگاه", "ایستگاه فضایی", "زیر دریایی", "سوپرمارکت", "دانشگاه", "شهر بازی", "موزه ی هنر", "کارخونه ی شکلات سازی", "قبرستون", "معدن ذغال سنگ", "محوطه ی ساخت و ساز", "گیم نت", "پمپ بنزین", "اسکله", "استادیوم هاکی روی یخ", "زندان", "کتابخونه", "دفتر کار", "پیست مسابقه", "خانه ی سالمندان", "کنسرت راک", "اتوبوس گشت و گذار", "مترو", "سازمان ملل متحد", "باغ انگور", "عروسی", "باغ وحش", "جنگل"]
+with open('Games\SPY game\places.json', 'r', encoding="utf8") as f:
+    data = json.load(f)
 
-# Players Email
-emails = []
+places = data["places"]
+places_fa = data["places_fa"]
+
+
+emails = []  # Players Email
+spy_num = 1  # Number of spy/spies
+
+
+place = random.randint(0, len(places)-1)
+spies = []
+for i in range(spy_num):
+    spy = emails[random.randint(0, len(emails)-1)]
+    while spy in spies:
+        spy = emails[random.randint(0, len(emails)-1)]
+    
+    spies.append(spy)
+
+
+time = time.strftime("%H:%M:%S", time.localtime()) + " "
+
+player_text = time + places[place] + " | " + places_fa[place]
+spy_text = time + "You are spy | شما جاسوس هستید"
+
 
 mail = "aryaspygamemail@gmail.com"
 token = "hrgxmjsaqunuqxfk"
 
 
-spy = emails[random.randint(1, len(emails)-1)]
-place = random.randint(0,48)
+player_text = time + places[place] + " | " + places_fa[place]
+def spy_text(x):
+    if len(spies) > 1:
+        text = time + "You are spy | شما جاسوس هستید \nYour teammate(S) | یار(ان) شما:"
+        for i in spies:
+                if x != i:
+                    text += "\n" + i
+    else:
+        text = time + "You are spy | شما جاسوس هستید"
 
-player_text = places[place] + " | " + places_fa[place]
-spy_text = "You are spy | شما جاسوس هستید"
+    return text
 
 
 s = smtplib.SMTP('smtp.gmail.com', 587)
@@ -29,14 +58,15 @@ for i in emails:
     msg['Subject'] = 'Spy Game'
     msg['From'] = mail
     msg['To'] = i
-    if i == spy:
-        msg.set_content(spy_text)
+    if i in spies:
+        msg.set_content(spy_text(i))
     else:
         msg.set_content(player_text)
+
 
     s.send_message(msg)
 
 s.quit()
 
 
-print("Sent")
+print("Sent All")
