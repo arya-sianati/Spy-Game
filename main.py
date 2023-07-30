@@ -1,3 +1,22 @@
+# Players Email
+emails = [] 
+
+# Number of spy/spies
+spy_num = 1  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import smtplib
 import random
 from email.message import EmailMessage
@@ -12,12 +31,9 @@ places = data["places"]
 places_fa = data["places_fa"]
 
 
-emails = []  # Players Email
-spy_num = 1  # Number of spy/spies
-
-
 place = random.randint(0, len(places)-1)
 spies = []
+
 for i in range(spy_num):
     spy = emails[random.randint(0, len(emails)-1)]
     while spy in spies:
@@ -32,8 +48,8 @@ player_text = time + places[place] + " | " + places_fa[place]
 spy_text = time + "You are spy | شما جاسوس هستید"
 
 
-mail = "aryaspygamemail@gmail.com"
-token = "hrgxmjsaqunuqxfk"
+mail = "aryaspygame@gmail.com"
+token = "xgkmguelbmlbizbs"
 
 
 player_text = time + places[place] + " | " + places_fa[place]
